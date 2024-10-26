@@ -1,0 +1,404 @@
+---
+title: "Capítulo 3 Estadística descriptiva unidimensional"
+subtitle: "Maestría en Estadística Aplicada: Descripción y Exploración de Datos"
+author: 
+- name: "Luis Fernando Escobar"
+  affiliation: "Universidad Autónoma Gabriel René Moreno Business School"
+date: "2024-10-23"
+logo: logo_bsuagrmp.png
+output: 
+  #html_document:
+  prettydoc::html_pretty:
+    toc: true
+    number_sections: true
+    #toc_float: true
+    theme: cayman 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(wooldridge)
+library(PerformanceAnalytics)
+library(tseries)
+library(psych)
+library(haven)
+```
+
+## Introducción
+
+La **estadística descriptiva unidimensional** nos brinda las herramientas necesarias para transformar un conjunto de datos en conocimiento útil. Desde medidas centrales como la **media, mediana y moda**, hasta medidas de dispersión como la **varianza, desviación estándar y rango**, en este capítulo se explora cómo estas técnicas pueden ayudarte a obtener una comprensión más profunda y precisa de los datos.
+
+Es así, que en este capítulo se aprenderá a calcular e interpretar las principales medidas descriptivas aplicadas a un conjunto de datos unidimensionales —aquellos que contienen una sola variable— y descubrir cómo estos conceptos fundamentales forman la base del análisis estadístico. Es decir, nos enfocamos en cómo estas herramientas estadísticas permiten reducir la complejidad, entender patrones y tendencias, y tomar decisiones informadas.
+
+Ya sea que trabajes con datos económicos y sociales, financieros, de comercio, de salud, demográficos, o resultados de encuestas, dominar la estadística descriptiva unidimensional es esencial para cualquier analista o científico de datos.
+
+## Estadígrafos de Posición  
+
+### Aspectos generales
+
+Las medidas de posición o de tendencia central, denominadas también como promedios, nos permiten determinar la posición de un valor respecto a un conjunto de datos, el cual lo consideramos como representativo o típico, para el total de las observaciones.
+
+Estas medidas aplicadas a las características de las unidades en una muestra, se les denomina estimadores o estadígrafos. En cambio, aplicadas a las características de los elementos de una población, se les conoce como parámetros o valores estadísticos de la población.
+
+### Media o media aritmética
+
+La expresión corriente de promedio, suele en la mayoría de los casos referirse a la media aritmética. 
+
+Es la medida de posición o promedio más conocida, por su gran estabilidad es la preferida en el muestreo, sus fórmulas admiten tratamiento algebraico. Su desventaja principal, es ser muy sensible a cambios en sus valores u observaciones, también, cuando alguno de sus valores extremos es demasiado grande o pequeño (outliers).
+
+La media se define como la **suma de todos los valores observados, divididos por el número total de observaciones**. Así pues, se la expresa con la siguiente formula:
+$$ \bar{X} = \mu = \frac{\sum_{i=1}^n x_i}{n}$$
+
+Para datos agrupados:
+$$ \bar{X} = \frac{\sum_{i=1}^n x_i*n_i}{\sum_{i=1}^n n_i}$$
+
+```{r , echo=FALSE}
+# > Lo importante es que recuerdes que al hablar de un objeto, estamos hablando de cualquier cosa que existe en R y que tiene un nombre.  
+# - Juan Bosco Mendoza
+
+# Así pues, se puede mencionar a las **funciones** `remove()` y `write.csv()`
+# ~~~
+# Funciones Estadísticas
+# mean(x)	        Media
+# sd(x)           Desviación estándar
+# var(x)          Varianza
+# median(x)       Mediana
+# quantiles(x)    Quantiles
+# cor(x,y)        Correlación
+# max(x)          Valor máximo
+# min(x)          Valor mínimo
+# range(x)        Retorna el máximo y mínimo
+# sort(x)         Ordena los elementos de x
+# summary	        Resumen de las variables
+# choose(n,k)	    Combinatoria de n sobre k  
+# ~~~
+
+```
+#### Propiedades de la media
+* La suma de las desviaciones respecto a la media, siempre serán iguales a cero.
+* La media aritmética de una variable por una constante, es igual a la constante por la media aritmética de la variable.
+* La media aritmética de una constante es igual a la constante.
+* La media aritmética de una variable más una constante, es igual a la media aritmética de la variable más la constante.
+* La media aritmética de la suma de dos variables, es igual a la suma de las dos medias correspondiente a las dos variables.
+* La media aritmética de dos muestras, es igual, a la media ponderada de las submuestras, siendo sus ponderaciones los tamaños de esas submuestras.
+
+#### Características de la media aritmética
+* La media es afectada por todos los valores.
+* Es influenciada por las magnitudes de los valores extremos.
+* Es suceptible de manipulacion algebraica.
+* Es el centro de gravedad equilibrando los valores en el centro.
+* No se puede calcular la media aritmética cuando hay distribuciones de extrenos abiertos.
+
+### Mediana
+Se define como **aquel valor de la variable que supera a no más de la mitad de las observaciones, al mismo tiempo, es superado por no más de la mitad de las observacione** en otras palabras, se puede definir como el **valor central**. Sus fórmulas son rígidas y no admiten tratamiento algebraico.
+
+Su gran ventaja es que los valores extremos no tienen ninguna incidencia en su cálculo.
+
+Se la expresa mediante la siguiente formula:
+
+$$ \bar{\theta} = \frac{n+1}{2}$$ 
+
+Para datos agrupados, mediante la siguiente formula de interpolación:
+
+$$ \bar{\theta} = Lim_{inf} + \frac{\frac{n+1}{2} - N_{i-1}}{n_i} * A_i$$
+
+### Moda o Modo
+Se define como **el valor de la variable que más se repite** o **aquel valor que presenta la máxima frecuencia**.
+
+Puede suceder que una distribución tenga dos Modas, en este caso se dice que la distribución es Bimodal, en el caso que haya más de dos modas, se dice que es plurimodal o multimodal. 
+
+Es la única medida de posición que puede ser utilizada en atributos, es decir, cuando la característica es cualitativa.
+
+Cuando una distribución es muy asimétrica, el Modo puede ser la medida más representativa del grupo. Otra utilidad,es que, en series plurimodales el modo permite dividir la distribución con fines de estratificación.
+**En una distribución simétrica, la media, la mediana y la moda son iguales**.
+
+La moda de datos agrupados no se puede determinar con precisión. Asi pues, se utiliza unas formulas de interpolación:
+
+
+$$ Moda = Lim_{inf} + \frac{n_{i+1}}{n_{i+1}+n_{i-1}} * A_i$$
+Para intervalos de amplitud diferente (anchos desiguales), se tiene que considerar la altura.
+
+
+$$ Moda = Lim_{inf} + \frac{h_{i+1}}{h_{i+1}+h_{i-1}} * A_i$$
+
+## Estadígrafos de Dispersión y Comparación 
+
+### Aspectos generales
+
+Las medidas de dispersión o de variablidad permiten determinar la variablidad con respecto a las medidas de tendencia central, así pues, se puede apreciar la representatividad de la misma mediante las medidas de dispersión. 
+
+Si se tienen datos muy dispersos se puede decir que sus mediadas de tencia central no son muy representativos de los mismos.
+
+### Varianza
+
+Las medidas de dispersión más conocidas y utilizadas son la varianza y la desviación típica o estándar. Esta última, es la raíz cuadrada de aquélla. 
+
+La varianza se define como: la media aritmética de los cuadrados de las diferencias (desviaciones) entre los valores que toma la variable y su media aritmética. Su símbolo es $S^2$ en la muestra, $\sigma^2$ (sigma al cuadrado) en la población.
+
+Utiliza el momento de orden 2 con respecto a la media.
+
+$$ S^2 = \frac{\sum_{i=1}^n (x_i - \bar{x})^2}{n}$$ 
+
+
+$$ \sigma^2 = \frac{\sum_{i=1}^n (X_i - \mu)^2}{N}$$
+
+#### Propiedades de la varianza
+
+1. La varianza debe ser siempre un valor positivo.
+2. La varianza de una constante es igual a 0.
+3.  La varianza de una constante más una variable, es igual a la varianza de la variable.
+4. La varianza de una constante por una variable, es igual al producto de la constante al cuadrado por la varianza de la variable.
+
+### Desviación estándar o desviación típica
+
+La desviación típica es la raíz cuadrada de la varianza, considerada siempre con signo positivo. Es la medida de dispersión más extensamente aplicada. 
+
+La **varianza se expresa siempre en unidades diferentes a las originales**, es decir, si la variable se refiere al peso en kg, al calcular la varianza el resultado obtenido estará dado en kg al cuadrado. Esta es la razón por la cual se utiliza la desviación estándar, pues el resultado se expresa en las mismas unidades de la variable.
+
+$$ S = \sqrt{S^2}$$
+
+$$ \sigma = \sqrt{\sigma^2}$$
+
+Si se tiene una variables aleatoria con una distribución normal la desviación estándar es útil para ver la probabilidad de ocurrencia de un evento. Si se toma una sola vez la desviación típica al lado y lado de la media, el intervalo obtenido, incluye el 68,3\% de las observaciones, si tomar dos incluye el 95,5\% y si se incluyen tres el 99,7\%.
+
+![Distribución normal](normal.jpg){width='600px' height='400px'}
+
+### Coeficiente de variación o variación relativa
+
+Dos o más varianzas y dos o más desviaciones típicas se pueden comparar entre sí, si las variables están dadas en las mismas unidades de medidas, en caso contrario, se deberá utilizar el coeficiente de variación. Además, Puede darse el caso de que estén expresadas en la misma unidad, pero nos interesa determinar la variación respecto a una base. 
+
+Para resolver los anteriores problemas se usa el coeficiente de variación.
+
+$$ CV = \frac{S}{\bar{x}} \times 100$$
+
+### Puntaje típico o estandarizado
+
+Es muy utilizado en la distribución normal y en el análisis del coeficiente de correlación, mide la desviación de una observación con respecto a la media aritmética en unidades de desviación típica, determinando la posición de una observación dada, dentro de un conjunto de observaciones. Permite comparar dos o más datos individuales, aunque pertenezcan a distribuciones diferentes, aún en casos en que la media y/o varianza no coincidan. 
+
+Se utiliza mucho para realizar pruebas de hipótesis y por tanto se ve más a detalle en el estudio de la *estadística inferencial*.
+
+$$ z = \frac{x - \bar{x}}{S}$$
+
+En una distribución normal estandariza la media de la variable z es 0 y su varianza es 1.
+
+### Otras medidas de dispersión
+
+* Desviación mediana.
+* Recorrido Intercuantílico.
+* Desviación Cuantil.
+* Coeficiente de desviación Cuantil.
+* Recorrido, oscilación o rango.
+
+## Estadígrafos de Forma Asimetría y Curtosis
+
+### Distribución simétrica
+
+Una  distribución es simétrica  si  las  frecuencias  absolutas y relativas, equidistantes a un punto central son iguales. Se cumple que $Media(M_x)$ = $Mediana(M_e)$ = $Moda(M_d)$. La distribución tendrá la forma de una campana, denominada de Gauss o normal, ya que el promedio se ubica en todo el centro de ella. 
+
+Si esto no se cumple, la distribución deja de ser simétrica y hablamos de distribuciones asimétricas positivas o negativas y las tres medidas (media, moda y mediana) no tienen igual valor.
+
+Si $M_x > M_e > M_d$ se dice que la distribución es asimétrica negativa, ya que la curva presenta un alargamiento hacia la derecha. Si por el contrario $M_x < M_e < M_d$, el alargamiento es hacia la izquierda y se dice que es asimétrica positiva.
+
+![Distribución simétrica y asimétrica](deformación.png){width='800px' height='200px'}
+
+Fórmulas para el cálculo del coeficiente de asimetría:
+
+$$ A_s = \frac{m_3}{S^3}$$
+
+$$ m_3 = \frac{\sum_{i=1}^n (x_i - \bar{x})^3}{n}$$
+
+Esta fórmula utiliza el momento de orden 3 con respecto a la media. Si:
+
+* $A_s = 0$ la distribución es simétrica.
+* $A_s >0$ la distribución es asimétrica positiva.
+* $A_s <0$ la distribución es asimétrica negativa.
+
+### Apuntamiento o Curtosis
+
+Una característica importante de la variación en algunas distribuciones, es su grado de agudeza en la cima de la curva que las representa. Esta agudeza que se observa en la región del Modo, comparada con las condiciones halladas para el mismo sitio en la curva normal, se llama **kurtosis o curtosis**.
+
+Si la curva es más plana que la normal, la distribución se le considera achatada o planticúrtica y si es más aguda se le denomina apuntada o leptocúrtica. Si la curva es normal se dice que es mesocúrtica.
+
+![Distribución de forma](kurtosis.png){width='600px' height='200px'}
+
+Cálculo del coeficiente de curtosis:
+
+La curtosis es una medida de altura de la curva y por tanto está representada por el **cuarto momento de la media**. 
+
+$$ A_p = \frac{m_4}{S^4}$$
+
+$$ m_4 = \frac{\sum_{i=1}^n (x_i - \bar{x})^4}{n}$$
+
+Si:
+
+* $A_p = 3$ la distribución es normal o mesocúrtica.
+* $A_p >3$ la curva es leptocúrtica o apuntado.
+* $A_p <3$ la curva es platicúrtica o achatada.
+
+
+## Ejemplo: calificaciones de un examen final 
+
+Se tiene las calificaciones de 33 estudiantes del segundo semestre de la UAGRM, de su examen final de estadística, Realice el el análisis  estadístico de las calificaciones, primero sin agrupar y luego agrupados (con amplitud de 10). Realice las comparaciones con los siguientes datos:
+
+$$ 5-5-5-5-10-10-13-13-15-23-23-23-23-25-26-28-33$$
+$$ -33-35-38-40-45-51-58-64-68-75-76-76-76-95-100-100$$
+
+### Estadísticas descriptivas para datos sin agrupar
+#### Solución 
+
+```{r}
+# Para iniciar se crea el vector de datos Notas
+Notas<-c(5,5,5,5,10,10,13,13,15,23,23,23,23,25,26,28,33,33,35,38,40,45,51,58,64,68,75,76,76,76,95,100,100)
+
+# Resumen de los cinco números más la media
+summary(Notas)
+
+# Rango
+range(Notas)
+
+# Rango obtenido paso a paso
+Rango<-max(Notas)-min(Notas);Rango
+
+#  Media aritmética
+Media<-mean(Notas)
+
+# Mediana
+Mediana<-median(Notas)  
+
+# Desviación estándar
+Desv_est<-sd(Notas)
+
+# Varianza
+Varianza<-var(Notas)
+
+# Coeficiente de variación
+CV<-(Desv_est/Media)*100
+
+# Tamaño de la muestra
+n<-length(Notas)
+
+# Error estándar de la media
+EE<-Desv_est/sqrt(n)
+
+#Objeto que contiene las estadísticas de resumen
+Descriptiva<-data.frame(Media,Mediana,Desv_est,Varianza,CV,n,EE)
+
+# Para visualizar el objeto, ejecute
+print(Descriptiva)
+
+```
+
+#### Empleando paquetería *moments*
+
+```{r , eval=FALSE}
+# Asimetría y curtosis
+# Para calcular la asimetría y curtosis se emplea el paquete moments Para instalarlo ejecute:
+install.packages('moments')
+
+# Se invoca para su uso el paquete “moments”
+library(moments)
+```
+
+```{r}
+# Valor de la asimetría de los datos de la variable Notas
+skewness(Notas)
+
+#Valor de la curtosis de los datos de la variable Notas
+kurtosis(Notas)
+```
+
+#### Empleando paquetería *psych*
+
+```{r , eval=FALSE}
+# Para descripción general se emplea el paquete psych Para instalarlo ejecute:
+install.packages('psych')
+
+# Se invoca para su uso el paquete 
+library(psych)
+```
+
+```{r}
+# Resumen general
+describe(Notas)
+
+```
+
+### Estadísticas descriptivas para datos agrupados
+#### Solución 
+
+```{r}
+# Para iniciar se crea el vector de datos Notas
+Notas<-c(5,5,5,5,10,10,13,13,15,23,23,23,23,25,26,28,33,33,35,38,40,45,51,58,64,68,75,76,76,76,95,100,100)
+
+# Tabla de frecuencias sin agrupar
+table(Notas)
+hist(Notas) # histograma de frecuencias por default
+
+# Histograma de frecuencias para el vector Notas maquillado
+hist(Notas,
+main="Histograma de frecuencias", xlab="Calificaciones de los estudiantes", ylab="Frecuencias absolutas", br=c(0,10,20,30,40,50,60,70,80,90,100), right=F, xlim=c(0,100), ylim=c(0,7), col=8,border="white")
+
+# Determina el máximo y mínimo dentro de la variable
+range(Notas)
+
+#Creamos una lista de límites de clase
+límites <- seq(0,100,by=10)
+
+#Agrupamos la data en los límites de clase
+frecuencia_notas <- cut(Notas, límites)
+
+# Crear la tabla agrupada de frecuencias 
+tabla_freq_notas <- 
+  transform(table(frecuencia_notas), Freq_rel=round(prop.table(Freq), 2),
+            Freq_relP=round(prop.table(Freq)*100, 2), Freq_acum=cumsum(Freq),
+            Freq_acum_rel=round(cumsum(prop.table(Freq)), 2),
+            Freq_acum_relP=round(cumsum(prop.table(Freq)*100), 2))
+
+# Mostrar la tabla de distribución
+print(tabla_freq_notas)
+
+# Alternativa de tabla de distribución
+lím_inf <- seq(0,90,by=10)
+lím_sup <- seq(10,100,by=10)
+marca_c <- seq(5,95,by=10)
+tabla_freq_notas_M <- data.frame(tabla_freq_notas, lím_inf, lím_sup, marca_c)
+
+# Mostrar el dataframe
+print(tabla_freq_notas_M)
+
+# Media agrupada
+Media_A <- (sum(tabla_freq_notas_M$Freq*tabla_freq_notas_M$marca_c))/sum(tabla_freq_notas_M$Freq)
+Media_A
+
+# Varianza agrupada
+tabla_freq_notas_M$Desv <- round(tabla_freq_notas_M$marca_c-Media_A, 2)
+tabla_freq_notas_M$Desv2 <- round((tabla_freq_notas_M$marca_c-Media_A)^2, 2)
+print(tabla_freq_notas_M)
+
+Varianza_A <- (sum(tabla_freq_notas_M$Freq*tabla_freq_notas_M$Desv2))/sum(tabla_freq_notas_M$Freq)
+Varianza_A
+
+Resultados <- data.frame(Media, Media_A, Varianza, Varianza_A)
+Resultados
+
+# Otra alternativa de agrupacion 
+# Número de clase
+nclass.Sturges(Notas)
+
+# Rango entre el valor mínimo y máximo
+range(Notas)         
+
+# Intervalos
+round(seq(5,100,length=nclass.Sturges(Notas)),1)
+
+intervalosN<-cut(Notas,breaks=round(seq(5,100,length=nclass.Sturges(Notas)),1),include.lowest=TRUE)
+table(intervalosN)
+
+
+```
+
+
+
+
+
